@@ -1,7 +1,11 @@
 require "bundler/setup"
 require "rael"
 require "tuple"
+require "exporter"
 require "pry"
+require 'date'
+require 'json'
+
 
 require_relative "./helpers/tuples.rb"
 

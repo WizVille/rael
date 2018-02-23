@@ -4,14 +4,39 @@ RSpec.describe Rael do
   end
 
   it "test tuple" do
-    a = get_questionnaire()
+    t = get_questionnaire()
 
-    expect(true).to eq(a.static[:illustration] == "page1.png")
-    expect(true).to eq(a.questions[1].static[:position] == 2)
-    expect(true).to eq(a.preference.foreign[:first_question].translations[0].static[:content] == "Question 1 fr")
+    expect(true).to eq(t.attributes.keys == [:illustration, :position])
+    expect(true).to eq(t.static[:illustration] == "page1.png")
+    expect(true).to eq(t.questions[1].static[:position] == 2)
+    expect(true).to eq(t.preference.foreign[:first_question].translations[0].static[:content] == "Question 1 fr")
   end
 
-  it "text export" do
-    
+  it "test export" do
+    tuples = get_questionnaire()
+
+    schema = {
+      :static => [ :illustration, :position, :created_at ],
+      :translated => [ :title, :subtitle ],
+      :foreign => {
+        :questions => {
+          :static => [ :position ],
+          :translated => [ :content ]
+        },
+        :preference => {
+          :static => [ :timeout ],
+          :foreign => {
+            :first_question => {
+              :options => { :model => "question" },
+              :static => [ :position ],
+              :translated => [ :content ]
+            }
+          }
+        }
+      }
+    }
+
+    exporter = Rael::Exporter.new(tuples, schema)
+    result = exporter.export
   end
 end

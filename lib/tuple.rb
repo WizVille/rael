@@ -45,6 +45,14 @@ module Rael
       @translations
     end
 
+    def attributes
+      Struct.new(:keys).new(@static.keys)
+    end
+
+    def self.table_name
+      "tuples"
+    end
+
     def method_missing(meth, *args, &block)
       if @static.include?(meth)
         return @static[meth]

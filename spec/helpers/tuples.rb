@@ -1,9 +1,9 @@
 def get_questionnaire
   tuples = Rael::Tuple.new(
-  	:static => { :illustration => "page1.png", :position => 1 },
+  	:static => { :illustration => "page1.png", :created_at => DateTime.new(2001,2,3.5).to_time, :position => 1 },
   	:translated => {
   		:title => { :fr => "Page 1 fr", :en => "Page 1 en" },
-  		:subtitle => { :fr => "Section 1 fr", :en => "Section 1 en" },
+  		:subtitle => { :fr => "Section 1 fr [\"é\"]", :en => "Section 1 en [\"é\"]" },
   	},
   	:foreign => {
   		:questions => [
@@ -29,7 +29,7 @@ def get_questionnaire
       )
   	}
   )
-
+  
   Rael::Tuple.resolve_foreign_keys
   Rael::Tuple.reset
 
