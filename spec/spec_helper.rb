@@ -2,6 +2,9 @@ require "bundler/setup"
 require "rael"
 require "tuple"
 require "exporter"
+require "importer"
+require "data_tree"
+require "schema"
 require "pry"
 require 'date'
 require 'json'
