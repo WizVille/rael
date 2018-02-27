@@ -1,3 +1,5 @@
+require 'json'
+
 module Rael
   class DataTree
     attr_reader :data, :schema, :origin_model_name
@@ -18,6 +20,24 @@ module Rael
 
     def schema
       self.symbolize_keys(@schema)
+    end
+
+    def serialize
+      JSON.pretty_generate({
+        :origin_model_name => @origin_model_name,
+        :schema => @schema,
+        :data => @data
+      })
+    end
+
+    def self.parse(data_tree_serialized)
+      data_tree_hash = JSON.parse(data_tree_serialized)
+
+      Rael::DataTree.new(
+        data_tree_hash["origin_model_name"],
+        :schema => data_tree_hash["schema"],
+        :data => data_tree_hash["data"]
+      )
     end
 
     def symbolize_keys(node)

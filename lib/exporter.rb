@@ -30,7 +30,7 @@ module Rael
 
     def resolve_schema(ac_node, schema_node, output_tree)
       if ac_node
-        if ac_node.is_a?(Array)
+        if self.kind_of_array?(ac_node)
           ac_node.each do |_ac_node|
             output_tree << {}
             self.resolve_schema(_ac_node, schema_node, output_tree.last)
@@ -43,10 +43,10 @@ module Rael
               begin
                 ac_sub_node = ac_node.send(foreign_key_name)
               rescue
-                raise "schema_node foreign key #{foreign_key_name} does not exit in model #{ac_sub_node.table_name}"
+                raise "Invalid foreign key <#{foreign_key_name}> in model <#{ac_node.class.table_name}>"
               end
 
-              if ac_sub_node.is_a?(Array)
+              if self.kind_of_array?(ac_sub_node)
                 if ac_sub_node.size > 0
                   output_tree[:foreign] ||= {}
                   output_tree[:foreign][foreign_key_name] ||= []
@@ -71,6 +71,10 @@ module Rael
       return output_tree
     end
 
+    def kind_of_array?(instance)
+      instance.respond_to?(:compact)
+    end
+
     def resolve_node(ac_node, schema_node, output_tree)
       Rael::Schema.validate_model!(ac_node, schema_node)
 
@@ -89,7 +93,7 @@ module Rael
         if schema_node[:static]
           schema_node[:static].each do |schema_node_key|
             output_tree[:static] ||= {}
-            output_tree[:static][schema_node_key] = ac_node.send(schema_node_key)
+            output_tree[:static][schema_node_key] = ac_node[schema_node_key]
           end
         end
 
@@ -100,7 +104,7 @@ module Rael
 
               output_tree[:translated] ||= {}
               output_tree[:translated][translated_schema_node_key] ||= {}
-              output_tree[:translated][translated_schema_node_key][locale] = translation.send(translated_schema_node_key)
+              output_tree[:translated][translated_schema_node_key][locale] = translation[translated_schema_node_key]
             end
           end
         end

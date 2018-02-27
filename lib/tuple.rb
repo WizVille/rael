@@ -65,6 +65,18 @@ module Rael
       end
     end
 
+    def [](ind)
+      if @static.include?(ind)
+        return @static[ind]
+      elsif @foreign.include?(ind)
+        return @foreign[ind]
+      elsif @translated.include?(ind)
+        return @translated[ind]
+      else
+        raise("#{ind}: not found")
+      end
+    end
+
     def pp
       puts "-"
       puts "id: <#{@id}>"

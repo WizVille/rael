@@ -8,7 +8,7 @@ require "schema"
 require "pry"
 require 'date'
 require 'json'
-
+require 'active_record'
 
 require_relative "./helpers/tuples.rb"
 

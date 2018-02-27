@@ -59,12 +59,6 @@ def partial_origin
           :translated => {
             :content => { :fr => "Question 1 fr", :en => "Question 1 en", :es => "Question 1 es" }
           },
-        ),
-        Rael::Tuple.new(
-          :static => { :position => 2 },
-          :translated => {
-            :content => { :fr => "Question 2 fr", :en => "Question 2 en" }
-          },
         )
       ],
       :preference => Rael::Tuple.new(

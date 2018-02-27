@@ -12,7 +12,7 @@ module Rael
         ac_keys = ac_model&.attributes&.keys&.map(&:to_sym) || []
         schema_node[:static].each do |schema_node_key|
           if !ac_keys.include?(schema_node_key)
-            raise "schema_node key #{schema_node_key} does not exit in model #{ac_model.table_name}"
+            raise "schema_node key <#{schema_node_key}> does not exit in model <#{ac_model.class.table_name}>"
           end
         end
       end
@@ -21,7 +21,7 @@ module Rael
         ac_keys = ac_model&.translations&.first&.attributes&.keys&.map(&:to_sym) || []
         schema_node[:translated].each do |translated_schema_node_key|
           if !ac_keys.include?(translated_schema_node_key)
-            raise "Translated schema_node key #{schema_node_key} does not exit in model #{ac_model.table_name}"
+            raise "Translated schema_node key <#{schema_node_key}> does not exit in model <#{ac_model.class.table_name}>"
           end
         end
       end

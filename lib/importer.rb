@@ -7,10 +7,15 @@ require 'active_support/inflector'
 module Rael
   class Importer
     def initialize(data_tree)
-      @data_tree = data_tree
-      @schema = data_tree.schema
 
-      @data = data_tree.data
+      if data_tree.is_a?(Rael::DataTree)
+        @data_tree = data_tree
+      else
+        @data_tree = Rael::DataTree.parse(data_tree)
+      end
+
+      @schema = @data_tree.schema
+      @data = @data_tree.data
 
       @node_refs = {}
     end
@@ -31,8 +36,6 @@ module Rael
           operations += self.resolve_schema(origin, @schema, data, :model_name => @data_tree.origin_model_name)
         end
       end
-
-      binding.pry
 
       operations
     end
@@ -109,7 +112,7 @@ module Rael
       operation = nil
 
       if schema_node&.dig(:options, :model_name)
-        model_name = data_node[:options][:model_name]
+        model_name = schema_node[:options][:model_name]
       end
 
       if data_node[:ref]
