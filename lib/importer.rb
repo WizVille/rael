@@ -2,6 +2,8 @@ require 'rael/data_tree'
 require 'rael/schema'
 require 'rael/ac_queue'
 require 'rael/operation'
+require 'rael/error'
+
 require 'active_support/inflector'
 
 module Rael

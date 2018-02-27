@@ -1,5 +1,6 @@
 require 'rael/data_tree'
 require 'rael/schema'
+require 'rael/error'
 
 module Rael
   class Exporter
@@ -43,7 +44,7 @@ module Rael
               begin
                 ac_sub_node = ac_node.send(foreign_key_name)
               rescue
-                raise "Invalid foreign key <#{foreign_key_name}> in model <#{ac_node.class.table_name}>"
+                raise Rael::Error.new("Invalid foreign key <#{foreign_key_name}> in model <#{ac_node.class.table_name}>")
               end
 
               if self.kind_of_array?(ac_sub_node)
