@@ -8,7 +8,7 @@ RSpec.describe "Tuples Tests" do
     expect(true).to eq(tuples.preference.foreign[:first_question].translations[0].static[:content] == "Question 1 fr")
   end
 
-  it "test t export" do
+  it "test tuple export" do
     tuples = get_questionnaire()
 
     schema = Rael::Schema.new("tuple", {
@@ -40,7 +40,7 @@ RSpec.describe "Tuples Tests" do
     expect(true).to eq(data_tree.data[0][:foreign][:preference][:foreign][:first_question][:ref] == :"tuples <__1>")
   end
 
-  it "test t operations" do
+  it "test tuple operations" do
     tuples = get_questionnaire()
 
     schema = Rael::Schema.new("tuple", {

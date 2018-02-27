@@ -52,11 +52,8 @@ RSpec.describe "Active Record Tests" do
   end
 
   it "test ac import" do
-    exporter = Rael::Exporter.new(@page_1, @schema)
-    data_tree = exporter.export
-    serialized_data_tree = data_tree.serialize()
-
-    Rael::Importer.new(serialized_data_tree).import(@page_2)
+    serialized_data_tree = Rael.export(@page_1, @schema)
+    imported_tree = Rael.import(serialized_data_tree, @page_2)
 
     expect(true).to eq(@page_2.reload.preference.first_question.position == 1)
     expect(true).to eq(@page_2.reload.preference.timeout == "10m")

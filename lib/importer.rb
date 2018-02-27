@@ -24,8 +24,9 @@ module Rael
       operations = self.get_operations(origin)
 
       ac_queue = Rael::AcQueue.new(:operations => operations)
-
       ac_queue.resolve
+
+      origin
     end
 
     def get_operations(origin)

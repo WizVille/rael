@@ -59,13 +59,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord
-  activesupport
-  awesome_print
+  activerecord (~> 5.1)
+  activesupport (~> 5.1)
+  awesome_print (~> 1.8)
   bundler (~> 1.16)
-  globalize
-  mysql2
-  pry
+  globalize (~> 5.1)
+  mysql2 (~> 0.4)
+  pry (~> 0.11)
   rael!
   rake (~> 10.0)
   rspec (~> 3.0)
