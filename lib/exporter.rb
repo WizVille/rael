@@ -1,5 +1,5 @@
-require 'data_tree'
-require 'schema'
+require 'rael/data_tree'
+require 'rael/schema'
 
 module Rael
   class Exporter

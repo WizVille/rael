@@ -1,4 +1,4 @@
-require 'operation'
+require 'rael/operation'
 
 module Rael
   class AcQueue

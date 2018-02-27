@@ -1,10 +1,11 @@
 require "bundler/setup"
 require "rael"
-require "tuple"
+require "rael/tuple"
 require "exporter"
 require "importer"
-require "data_tree"
-require "schema"
+require "rael/data_tree"
+require "rael/schema"
+
 require "pry"
 require 'date'
 require 'json'

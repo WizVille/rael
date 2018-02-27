@@ -1,7 +1,7 @@
-require 'data_tree'
-require 'schema'
-require 'ac_queue'
-require 'operation'
+require 'rael/data_tree'
+require 'rael/schema'
+require 'rael/ac_queue'
+require 'rael/operation'
 require 'active_support/inflector'
 
 module Rael
