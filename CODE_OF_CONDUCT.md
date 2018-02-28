@@ -1,79 +1,74 @@
-# Rael
+# Contributor Covenant Code of Conduct
 
-Rael is an explicit way to import, export and clone active record tree.
+## Our Pledge
 
-## Public Methods
+In the interest of fostering an open and welcoming environment, we as
+contributors and maintainers pledge to making participation in our project and
+our community a harassment-free experience for everyone, regardless of age, body
+size, disability, ethnicity, gender identity and expression, level of experience,
+nationality, personal appearance, race, religion, or sexual identity and
+orientation.
 
-```
-# Export origin node following the schema
-data_tree = Rael.export(origin, schema)
+## Our Standards
 
-# Import data_tree in the destination node
-Rael.import(data_tree, destination)
+Examples of behavior that contributes to creating a positive environment
+include:
 
-# Clone origin node in destination node following the schema
-Rael.clone(origin, schema, destination)
-```
+* Using welcoming and inclusive language
+* Being respectful of differing viewpoints and experiences
+* Gracefully accepting constructive criticism
+* Focusing on what is best for the community
+* Showing empathy towards other community members
 
-## Origin
+Examples of unacceptable behavior by participants include:
 
-Origin is the root node you want to explore, it must be a model instance or an array of model instances.
+* The use of sexualized language or imagery and unwelcome sexual attention or
+advances
+* Trolling, insulting/derogatory comments, and personal or political attacks
+* Public or private harassment
+* Publishing others' private information, such as a physical or electronic
+  address, without explicit permission
+* Other conduct which could reasonably be considered inappropriate in a
+  professional setting
 
-## Destination
+## Our Responsibilities
 
-Origin is the root node where you want to import data, it must be a model instance or nil.
+Project maintainers are responsible for clarifying the standards of acceptable
+behavior and are expected to take appropriate and fair corrective action in
+response to any instances of unacceptable behavior.
 
-## Schema
+Project maintainers have the right and responsibility to remove, edit, or
+reject comments, commits, code, wiki edits, issues, and other contributions
+that are not aligned to this Code of Conduct, or to ban temporarily or
+permanently any contributor for other behaviors that they deem inappropriate,
+threatening, offensive, or harmful.
 
-The schema is an hash style way to describe an active record tree. A schema is a tree of node, each node is a hash that correspond to a model, hash may be composed of 4 keys:
+## Scope
 
-* static: an array which contains attributes you want to export from model
-* translated: an array which contains transalted attributes (globalize) you want to export from model
-* foreign: a hash which list relations with other nodes you want to explore
-* options: extra options about the node
-	- foreign_key_in_parent: the foreign key is inside the parent instead of the child
+This Code of Conduct applies both within project spaces and in public spaces
+when an individual is representing the project or its community. Examples of
+representing a project or community include using an official project e-mail
+address, posting via an official social media account, or acting as an appointed
+representative at an online or offline event. Representation of a project may be
+further defined and clarified by project maintainers.
 
-Here is an example:
+## Enforcement
 
-```
-# An exemple of a questionnaire_page
-# questionnaire_page has many questions
-# questionnaire_page ha one preference
-# preference has one question
-# preference ha one account
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported by contacting the project team at clement.bruchon@gmail.com. All
+complaints will be reviewed and investigated and will result in a response that
+is deemed necessary and appropriate to the circumstances. The project team is
+obligated to maintain confidentiality with regard to the reporter of an incident.
+Further details of specific enforcement policies may be posted separately.
 
-Rael::Schema.new("questionnaire_page", {
-	:static => [ :position, :illustration, :created_at ],
-	:translated => [ :title ],
-	:foreign => {
-	  :questions => {
-	    :static => [ :position ],
-	    :translated => [ :content ]
-	  },
-	  :preference => {
-	    :static => [ :timeout ],
-	    :foreign => {
-	      :first_question => {
-	        :options => { :foreign_key_in_parent => true },
-	        :static => [ :position ],
-	        :translated => [ :content ]
-	      },
-	      :account => {
-	        :static => [ :unique_id ]
-	      }
-	    }
-	  }
-	}
-})
-```
+Project maintainers who do not follow or enforce the Code of Conduct in good
+faith may face temporary or permanent repercussions as determined by other
+members of the project's leadership.
 
-## Misc
+## Attribution
 
-* Active Record belongs_to / has_many / has_one must be present in model according to schema
-* If an import failed, importer will try to revert any action performed
-* Any error send a Rael::Error
-* If you want to run the test suite, you have to set correct credientials in function "connect_ac"
+This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
+available at [http://contributor-covenant.org/version/1/4][version]
 
-## Why Rael ?
-
-Because it clones things : )
+[homepage]: http://contributor-covenant.org
+[version]: http://contributor-covenant.org/version/1/4/
