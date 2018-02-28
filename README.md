@@ -38,11 +38,11 @@ Here is an example:
 ```
 # An exemple of a questionnaire_page
 # questionnaire_page has many questions
-# questionnaire_page ha one preference
+# questionnaire_page has one preference
 # preference has one question
-# preference ha one account
+# preference has one account
 
-Rael::Schema.new("questionnaire_page", {
+schema = Rael::Schema.new("questionnaire_page", {
 	:static => [ :position, :illustration, :created_at ],
 	:translated => [ :title ],
 	:foreign => {
@@ -65,6 +65,11 @@ Rael::Schema.new("questionnaire_page", {
 	  }
 	}
 })
+
+page_1 = QuestionnairePage.find(1)
+page_2 = QuestionnairePage.find(2)
+
+Rael.clone(page_1, schema, page_2)
 ```
 
 ## Misc
