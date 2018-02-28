@@ -9,6 +9,7 @@ RSpec.describe "Active Record Tests" do
     require_relative "./helpers/ac/questionnaire_page.rb"
     require_relative "./helpers/ac/question.rb"
     require_relative "./helpers/ac/preference.rb"
+    require_relative "./helpers/ac/account.rb"
 
     require_relative "./helpers/ac/ac_populate_helper.rb"
   end
@@ -58,10 +59,10 @@ RSpec.describe "Active Record Tests" do
 
       expect(@page_2.illustration).to eq("page1.png")
       expect(@page_2.translations[1].title).to eq("Page 1 fr")
-      expect(@page_2.reload.preference.first_question.position).to eq(1)
-      expect(@page_2.reload.preference.timeout).to eq("10m")
-      expect(@page_2.reload.preference.first_question.translations[2][:content]).to eq("Question 1 fr")
-      expect(@page_2.reload.questions.size).to eq(2)
+      expect(@page_2.preference.first_question.position).to eq(1)
+      expect(@page_2.preference.timeout).to eq("10m")
+      expect(@page_2.preference.first_question.translations[2][:content]).to eq("Question 1 fr")
+      expect(@page_2.questions.size).to eq(2)
     end
   end
 
@@ -135,9 +136,54 @@ RSpec.describe "Active Record Tests" do
       serialized_data_tree = Rael.export(@page_1, schema)
       imported_tree = Rael.import(serialized_data_tree, @page_2)
 
-      expect(@page_2.reload.questions.size).to eq(3)
-      expect(@page_2.reload.preference.id).to eq(old_id)
-      expect(@page_2.reload.preference.timeout).to eq("10m")
+      expect(@page_2.questions.size).to eq(3)
+      expect(@page_2.preference.id).to eq(old_id)
+      expect(@page_2.preference.timeout).to eq("10m")
+    end
+
+    it "test multi destination update" do
+      page_3 = create_page_3()
+      schema = Rael::Schema.new("questionnaire_page", {
+        :static => [ :position, :created_at ],
+        :translated => [ :title ],
+        :foreign => {
+          :questions => {
+            :static => [ :position ],
+            :translated => [ :content ]
+          },
+          :preference => {
+            :static => [ :timeout ],
+            :foreign => {
+              :first_question => {
+                :options => { :foreign_key_in_parent => true },
+                :static => [ :position ],
+                :translated => [ :content ]
+              }
+            }
+          }
+        }
+      })
+
+      Rael.clone(@page_1, schema, [@page_2, page_3])
+
+      expect(page_3.preference.first_question.content).to eq("Question 1 en")
+      expect(page_3.preference.id).not_to eq(@page_2.preference.id)
+      expect(page_3.preference.id).not_to eq(@page_1.preference.id)
+      expect(page_3.questions.count).to eq(2)
+      expect(@page_2.questions.count).to eq(2)
+    end
+
+    it "test multi origin update" do
+      page_3 = create_page_3()
+
+      schema = Rael::Schema.new("question", {
+        :static => [ :position ],
+        :translated => [ :content ]
+      })
+
+      Rael.clone(@page_1.questions, schema, nil)
+
+      expect(Question.count).to eq(4)
     end
   end
 
@@ -149,6 +195,7 @@ RSpec.describe "Active Record Tests" do
       @page_2 = create_page_2()
       @questions = create_questions(@page_1)
       @preference = create_preference(@page_1, @questions)
+      @account = create_account(@preference)
     end
 
     it "test missing key" do
@@ -182,5 +229,48 @@ RSpec.describe "Active Record Tests" do
 
       expect { Rael.export(@page_1, schema) }.to raise_error(Rael::Error)
     end
+
+    it "test revert mutations" do
+      schema = Rael::Schema.new("questionnaire_page", {
+        :static => [ :position, :illustration, :created_at ],
+        :translated => [ :title ],
+        :foreign => {
+          :questions => {
+            :static => [ :position ],
+            :translated => [ :content ]
+          },
+          :preference => {
+            :static => [ :timeout ],
+            :foreign => {
+              :first_question => {
+                :options => { :foreign_key_in_parent => true },
+                :static => [ :position ],
+                :translated => [ :content ]
+              },
+              :account => {
+                :static => [ :unique_id ]
+              }
+            }
+          }
+        }
+      })
+
+      q_count = Question.count
+      p_count = Preference.count
+      qp_count = QuestionnairePage.count
+      a_count = Account.count
+
+      expect { Rael.clone(@page_1, schema, @page_2) }.to raise_error(Rael::Error)
+
+      expect(@page_2.illustration).to eq("page2.png")
+      expect(@page_2.translations[0].title).to eq("Page 2 en")
+      expect(@page_2.translations[1].title).to eq("Page 2 fr")
+
+      expect(Question.count).to eq(q_count)
+      expect(Account.count).to eq(a_count)
+      expect(Preference.count).to eq(p_count)
+      expect(QuestionnairePage.count).to eq(qp_count)
+    end
+
   end
 end

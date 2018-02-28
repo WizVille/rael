@@ -122,6 +122,10 @@ module Rael
       end
     end
 
+    def reload
+      true
+    end
+
     def self.reset
       @@id = 1
       @@id_hash = {}

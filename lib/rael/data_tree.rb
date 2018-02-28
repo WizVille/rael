@@ -25,8 +25,8 @@ module Rael
     def serialize
       JSON.pretty_generate({
         :origin_model_name => @origin_model_name,
-        :schema => @schema,
-        :data => @data
+        :data => @data,
+        :schema => @schema
       })
     end
 

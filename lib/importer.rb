@@ -35,8 +35,20 @@ module Rael
       operations = []
 
       if @data
-        @data.each do |data|
-          operations += self.resolve_schema(origin, @schema, data, :model_name => @data_tree.origin_model_name)
+        if self.kind_of_array?(origin)
+          origin.each do |_origin|
+            @data.each do |data|
+              operations += self.resolve_schema(_origin, @schema, data, :model_name => @data_tree.origin_model_name)
+            end
+
+            _origin&.reload
+          end
+        else
+          @data.each do |data|
+            operations += self.resolve_schema(origin, @schema, data, :model_name => @data_tree.origin_model_name)
+          end
+
+          origin&.reload
         end
       end
 
@@ -153,6 +165,10 @@ module Rael
       end
 
       operation
+    end
+
+    def kind_of_array?(instance)
+      instance.respond_to?(:compact)
     end
   end
 end

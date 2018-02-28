@@ -2,7 +2,7 @@ require 'active_support/inflector'
 
 module Rael
   class Operation
-    attr_reader :type, :model_name, :node_id, :model, :data, :ref, :options, :resolved, :parent_model_name, :parent_node_id
+    attr_reader :type, :model_name, :node_id, :model, :data, :ref, :options, :parent_model_name, :parent_node_id, :mutations
 
     def initialize(
       type,
@@ -24,28 +24,121 @@ module Rael
       @data = data || {}
       @ref = ref
       @options = options || {}
+      @mutations = []
+    end
 
-      @resolved = false
+    def resolve!(model_by_node_id)
+      if self.type == :create
+        @model = self.create_model(@model_name.to_s.classify)
+      end
+
+      if @ref
+        @model = model_by_node_id[@ref.to_sym]
+        @node_id = @ref.to_sym
+      end
+
+      self.set_static_attributes(model_by_node_id)
+      self.set_translated_attributes(model_by_node_id)
+
+      model_by_node_id[@node_id.to_sym] = @model
+    end
+
+    def revert!
+      deleted_model = {}
+
+      @mutations.each do |mutation|
+        model = mutation[:model]
+
+        unless model.destroyed?
+          case mutation[:action]
+          when :set_attr
+             model[mutation[:key]] = mutation[:old_val]
+          when :set_translated_attrs
+            model.attributes = mutation[:old_translation]
+          when :save_model
+            model.save
+          when :create_model
+            if model.respond_to?(:translations)
+              model.translations.each(&:delete)
+            end
+            model.delete
+          end
+        end
+      end
+
+      @mutations = []
+    end
+
+    def create_model(model_name)
+      model = model_name.constantize.new
+
+      @mutations << {
+        :action => :create_model,
+        :model => model
+      }
+
+      model
+    end
+
+    def set_attribute(model, key, new_val)
+      old_val = @model[key]
+
+      model[key] = new_val
+
+      @mutations << {
+        :action => :set_attr,
+        :model => model,
+        :key => key,
+        :old_val => old_val,
+        :new_val => new_val
+      }
+    end
+
+    def set_translation(model, translation)
+      locale = translation[:locale].to_sym
+
+      old_translation = model.translations.detect{|translation| translation.locale.to_sym == locale }&.attributes || {}
+      old_translation = old_translation.select{|key, val| translation.keys.include?(key.to_sym) }
+
+      model.attributes = translation
+
+      @mutations << {
+        :action => :set_translated_attrs,
+        :model => model,
+        :locale => locale,
+        :old_translation => old_translation,
+        :new_translation => translation
+      }
+    end
+
+    def save_model(model)
+      model.save!
+
+      @mutations << {
+        :action => :save_model,
+        :model => model
+      }
     end
 
     def set_static_attributes(model_by_node_id)
       if @data[:static]
         @data[:static].each do |data_node_key, data_node_value|
-          @model[data_node_key] = data_node_value
+          self.set_attribute(@model, data_node_key, data_node_value)
         end
       end
 
       if @parent_node_id
         if @options[:foreign_key_in_parent]
-          @model.save!
-          model_by_node_id[@parent_node_id.to_sym]["#{@model_name}_id"] = @model.id
-          model_by_node_id[@parent_node_id.to_sym].save!
+          self.save_model(@model)
+
+          self.set_attribute(model_by_node_id[@parent_node_id.to_sym], "#{@model_name}_id", @model.id)
+          self.save_model(model_by_node_id[@parent_node_id.to_sym])
         else
-          @model["#{@parent_model_name}_id"] = model_by_node_id[@parent_node_id.to_sym].id
+          self.set_attribute(@model, "#{@parent_model_name}_id", model_by_node_id[@parent_node_id.to_sym].id)
         end
       end
 
-      @model.save!
+      self.save_model(@model)
     end
 
     def set_translated_attributes(model_by_node_id)
@@ -60,29 +153,10 @@ module Rael
         end
 
         translated_hash.each do |locale, columns|
-          @model.attributes = columns.merge({ :locale => locale })
-
-          @model.save!
+          self.set_translation(@model, columns.merge({ :locale => locale }))
+          self.save_model(@model)
         end
       end
-    end
-
-    def resolve!(model_by_node_id)
-      if self.type == :create
-        @model = @model_name.to_s.classify.constantize.new
-      end
-
-      if @ref
-        @model = model_by_node_id[@ref.to_sym]
-        @node_id = @ref.to_sym
-      end
-
-      self.set_static_attributes(model_by_node_id)
-      self.set_translated_attributes(model_by_node_id)
-
-      model_by_node_id[@node_id.to_sym] = @model
-
-      @resolved = true
     end
   end
 end

@@ -28,6 +28,32 @@ def create_page_2
   q_page
 end
 
+def create_page_3
+  q_page = QuestionnairePage.new
+
+  q_page.illustration = "page3.png"
+  q_page.created_at = Time.now
+  q_page.position = 2
+  q_page.save
+
+  q_page.attributes = { :title => "Page 3 fr", :subtitle => "Section 3 fr [\"é\"]", :locale => :fr }
+  q_page.attributes = { :title => "Page 3 en", :subtitle => "Section 3 en [\"é\"]", :locale => :en }
+  q_page.save
+
+  q_page
+end
+
+def create_account(preference, unique_id: 1, name: "account 1")
+  a = Account.new
+
+  a.unique_id = unique_id
+  a.name = name
+  a.preference_id = preference.id
+  a.save
+
+  a
+end
+
 def create_questions(q_page, second_question: true)
   questions = []
 

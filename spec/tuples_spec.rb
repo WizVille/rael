@@ -77,7 +77,7 @@ RSpec.describe "Tuples Tests" do
       expect(operations[4].parent_model_name&.to_sym).to eq(:"preference")
     end
 
-    it "Missing key" do
+    it "test missing key" do
       schema = Rael::Schema.new("questionnaire_page", {
         :static => [ :illustration, :position, :created_at, :missing_attr ],
         :translated => [ :title, :subtitle ],
@@ -86,7 +86,7 @@ RSpec.describe "Tuples Tests" do
       expect { Rael.export(@tuples, schema) }.to raise_error(Rael::Error)
     end
 
-    it "Missing translated key" do
+    it "test missing translated key" do
       schema = Rael::Schema.new("questionnaire_page", {
         :static => [ :illustration, :position, :created_at ],
         :translated => [ :title, :subtitle, :missing_trad ],
@@ -94,7 +94,7 @@ RSpec.describe "Tuples Tests" do
       expect { Rael.export(@tuples, schema) }.to raise_error(Rael::Error)
     end
 
-    it "Missing foreign key" do
+    it "test missing foreign key" do
       schema = Rael::Schema.new("questionnaire_page", {
         :static => [ :illustration, :position, :created_at ],
         :translated => [ :title, :subtitle ],

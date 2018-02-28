@@ -12,10 +12,11 @@ def reset_ac
   QuestionnairePage.destroy_all
   Question.destroy_all
   Preference.destroy_all
+  Account.destroy_all
 end
 
 def drop_ac_tables
-  ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS questionnaire_pages, questionnaire_page_translations, questions, question_translations, preferences;")
+  ActiveRecord::Base.connection.execute("DROP TABLE IF EXISTS accounts, questionnaire_pages, questionnaire_page_translations, questions, question_translations, preferences;")
 end
 
 def create_ac_tables
@@ -64,9 +65,20 @@ def create_ac_tables
     );
   eos
 
+  create_accounts = <<~eos
+    CREATE TABLE IF NOT EXISTS accounts (
+      id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+      unique_id INT,
+      name VARCHAR(255),
+      preference_id INT
+    );
+  eos
+
+
   ActiveRecord::Base.connection.execute(create_questionnaire_pages)
   ActiveRecord::Base.connection.execute(create_questions)
   ActiveRecord::Base.connection.execute(create_preferences)
+  ActiveRecord::Base.connection.execute(create_accounts)
 
   ActiveRecord::Base.connection.execute(create_questionnaire_page_translations)
   ActiveRecord::Base.connection.execute(create_question_translations)

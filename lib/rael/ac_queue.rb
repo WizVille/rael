@@ -8,8 +8,16 @@ module Rael
     end
 
     def resolve
-      @operations.each do |operation|
-        operation.resolve!(@model_by_node_id)
+      begin
+        @operations.each do |operation|
+          operation.resolve!(@model_by_node_id)
+        end
+      rescue Exception => e
+        @operations.each do |operation|
+          operation.revert!
+        end
+
+        raise Rael::Error.new(e)
       end
     end
   end
