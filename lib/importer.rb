@@ -22,33 +22,33 @@ module Rael
       @node_refs = {}
     end
 
-    def import(origin)
-      operations = self.get_operations(origin)
+    def import(destination)
+      operations = self.get_operations(destination)
 
       ac_queue = Rael::AcQueue.new(:operations => operations)
       ac_queue.resolve
 
-      origin
+      destination
     end
 
-    def get_operations(origin)
+    def get_operations(destination)
       operations = []
 
       if @data
-        if self.kind_of_array?(origin)
-          origin.each do |_origin|
+        if self.kind_of_array?(destination)
+          destination.each do |_destination|
             @data.each do |data|
-              operations += self.resolve_schema(_origin, @schema, data, :model_name => @data_tree.origin_model_name)
+              operations += self.resolve_schema(_destination, @schema, data, :model_name => @data_tree.origin_model_name)
             end
 
-            _origin&.reload
+            _destination&.reload
           end
         else
           @data.each do |data|
-            operations += self.resolve_schema(origin, @schema, data, :model_name => @data_tree.origin_model_name)
+            operations += self.resolve_schema(destination, @schema, data, :model_name => @data_tree.origin_model_name)
           end
 
-          origin&.reload
+          destination&.reload
         end
       end
 

@@ -13,7 +13,7 @@ module Rael
     Rael::Exporter.new(origin, schema).export.serialize
   end
 
-  def self.import(data_tree, origin)
-    Rael::Importer.new(data_tree).import(origin)
+  def self.import(data_tree, destination)
+    Rael::Importer.new(data_tree).import(destination)
   end
 end
