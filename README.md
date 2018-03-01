@@ -35,6 +35,7 @@ The schema is an hash style way to describe an active record tree. A schema is a
 * foreign (f): a hash which list relations with other nodes you want to explore
 * options (o): extra options about the node
 	- foreign_key_in_parent: the foreign key is inside the parent instead of the child
+	- foreign_key_name: the foreign key name if it is not "model_name_id"
 
 Here is an example:
 

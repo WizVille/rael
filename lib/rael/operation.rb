@@ -130,11 +130,10 @@ module Rael
       if @parent_node_id
         if @options[:foreign_key_in_parent]
           self.save_model(@model)
-
-          self.set_attribute(model_by_node_id[@parent_node_id.to_sym], "#{@model_name}_id", @model.id)
+          self.set_attribute(model_by_node_id[@parent_node_id.to_sym], @options[:foreign_key_name] || "#{@model_name}_id", @model.id)
           self.save_model(model_by_node_id[@parent_node_id.to_sym])
         else
-          self.set_attribute(@model, "#{@parent_model_name}_id", model_by_node_id[@parent_node_id.to_sym].id)
+          self.set_attribute(@model, @options[:foreign_key_name] || "#{@parent_model_name}_id", model_by_node_id[@parent_node_id.to_sym].id)
         end
       end
 
