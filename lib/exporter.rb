@@ -39,8 +39,8 @@ module Rael
         else
           self.resolve_node(ac_node, schema_node, output_tree)
 
-          if schema_node[:foreign]
-            schema_node[:foreign].each do |foreign_key_name, schema_node|
+          if Rael::Schema.foreign(schema_node)
+            Rael::Schema.foreign(schema_node).each do |foreign_key_name, schema_node|
               begin
                 ac_sub_node = ac_node.send(foreign_key_name)
               rescue
@@ -77,8 +77,8 @@ module Rael
 
       node_id = "#{ac_node.class.table_name} <#{ac_node.id}>".to_sym
 
-      if schema_node[:options]
-        output_tree[:options] = schema_node[:options]
+      if Rael::Schema.options(schema_node)
+        output_tree[:options] = Rael::Schema.options(schema_node)
       end
 
       if @obj_refs[node_id]
@@ -87,15 +87,15 @@ module Rael
         output_tree[:id] = ac_node.id
         output_tree[:node_id] = node_id
 
-        if schema_node[:static]
-          schema_node[:static].each do |schema_node_key|
+        if Rael::Schema.static(schema_node)
+          Rael::Schema.static(schema_node).each do |schema_node_key|
             output_tree[:static] ||= {}
             output_tree[:static][schema_node_key] = ac_node[schema_node_key]
           end
         end
 
-        if schema_node[:translated]
-          schema_node[:translated].each do |translated_schema_node_key|
+        if Rael::Schema.translated(schema_node)
+          Rael::Schema.translated(schema_node).each do |translated_schema_node_key|
             ac_node.translations.each do |translation|
               locale = translation.locale
 

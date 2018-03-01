@@ -36,7 +36,7 @@ The schema is an hash style way to describe an active record tree. A schema is a
 Here is an example:
 
 ```
-# An exemple of a questionnaire_page
+# An example of a questionnaire_page
 # questionnaire_page has many questions
 # questionnaire_page has one preference
 # preference has one question

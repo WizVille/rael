@@ -3,8 +3,8 @@ RSpec.describe "Active Record Tests" do
     require_relative "./helpers/ac/ac_base_helper.rb"
 
     connect_ac()
-    drop_ac_tables()
-    create_ac_tables()
+    # drop_ac_tables()
+    # create_ac_tables()
 
     require_relative "./helpers/ac/questionnaire_page.rb"
     require_relative "./helpers/ac/question.rb"
@@ -25,15 +25,15 @@ RSpec.describe "Active Record Tests" do
 
       @schema = Rael::Schema.new("questionnaire_page", {
         :static => [ :illustration, :position, :created_at ],
-        :translated => [ :title, :subtitle ],
+        :t => [ :title, :subtitle ],
         :foreign => {
           :questions => {
             :static => [ :position ],
             :translated => [ :content ]
           },
           :preference => {
-            :static => [ :timeout ],
-            :foreign => {
+            :s => [ :timeout ],
+            :f => {
               :first_question => {
                 :options => { :foreign_key_in_parent => true },
                 :static => [ :position ],

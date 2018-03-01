@@ -86,7 +86,7 @@ module Rael
 
               self.resolve_schema(
                 ac_sub_node,
-                schema_node[:foreign][foreign_key_name],
+                Rael::Schema.foreign(schema_node)[foreign_key_name],
                 _foreign_data,
                 operations,
                 :model_name => foreign_key_name.to_s.singularize,
@@ -99,7 +99,7 @@ module Rael
 
             self.resolve_schema(
               ac_sub_node,
-              schema_node[:foreign][foreign_key_name],
+              Rael::Schema.foreign(schema_node)[foreign_key_name],
               foreign_data,
               operations,
               :model_name =>  foreign_key_name,
@@ -126,7 +126,7 @@ module Rael
       operation_data = data_node.select { |key, value| [:static, :translated ].include?(key.to_sym) }
       operation = nil
 
-      if schema_node&.dig(:options, :model_name)
+      if Rael::Schema.options(schema_node)&.dig(:model_name)
         model_name = schema_node[:options][:model_name]
       end
 
@@ -136,7 +136,7 @@ module Rael
           :model_name => model_name,
           :parent_model_name => parent_model_name,
           :parent_node_id => parent_node_id,
-          :options => schema_node[:options],
+          :options => Rael::Schema.options(schema_node),
           :ref => data_node[:ref]
         )
       else
@@ -149,7 +149,7 @@ module Rael
             :node_id => data_node[:node_id],
             :model => ac_node,
             :data => operation_data,
-            :options => schema_node[:options]
+            :options => Rael::Schema.options(schema_node)
           )
         else
           operation = Rael::Operation.new(
@@ -159,7 +159,7 @@ module Rael
             :parent_node_id => parent_node_id,
             :node_id => data_node[:node_id],
             :data => operation_data,
-            :options => schema_node[:options]
+            :options => Rael::Schema.options(schema_node)
           )
         end
       end

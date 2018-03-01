@@ -26,6 +26,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry", "~> 0.11"
   spec.add_development_dependency "awesome_print", "~> 1.8"
   spec.add_development_dependency "activerecord", "~> 5.1"
-  spec.add_development_dependency "mysql2", "~> 0.4"
+  spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "globalize", "~> 5.1"
 end
