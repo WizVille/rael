@@ -5,6 +5,9 @@ Rael is an explicit way to import, export and clone active record tree.
 ## Public Methods
 
 ```
+# Create a schema object from schema_tree with started by origin_model_name
+schema = Rael.schema(origin_model_name, schema_tree)
+
 # Export origin node following the schema
 data_tree = Rael.export(origin, schema)
 
@@ -42,7 +45,7 @@ Here is an example:
 # preference has one question
 # preference has one account
 
-schema = Rael::Schema.new("questionnaire_page", {
+schema = Rael.schema("questionnaire_page", {
 	:static => [ :position, :illustration, :created_at ],
 	:translated => [ :title ],
 	:foreign => {
