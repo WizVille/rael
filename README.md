@@ -77,7 +77,6 @@ Rael.clone(page_1, schema, page_2)
 * Active Record belongs_to / has_many / has_one must be present in model according to schema
 * If an import failed, importer will try to revert any action performed
 * Any error send a Rael::Error
-* If you want to run the test suite, you have to set correct credientials in function "connect_ac"
 
 ## Why Rael ?
 
