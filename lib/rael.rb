@@ -1,7 +1,7 @@
 require "rael/version"
+require "rael/schema"
 require "exporter"
 require "importer"
-require "schema"
 
 module Rael
   def self.clone(origin, schema, destination)
