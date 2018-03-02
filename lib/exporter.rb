@@ -83,7 +83,8 @@ module Rael
 
       if @obj_refs[node_id]
         output_tree[:ref] = node_id
-        
+        output_tree[:node_id] = node_id
+
         output_tree = @obj_refs[node_id]
       else
         output_tree[:id] = ac_node.id
@@ -91,6 +92,7 @@ module Rael
 
         @obj_refs[node_id] = output_tree
       end
+
 
       if Rael::Schema.static(schema_node).size > 0
         Rael::Schema.static(schema_node).each do |schema_node_key|

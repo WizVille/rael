@@ -93,6 +93,24 @@ def create_questions(q_page, second_question: true)
   questions
 end
 
+def add_free_question(q_page)
+  question = FreeQuestion.new
+
+  question.position = 42
+  question.questionnaire_page_id = q_page.id
+  question.save
+
+  question.attributes = { :content => "Question free en", :locale => :en }
+  question.save
+
+  qp = QuestionPreference.new
+  qp.question_id = question.id
+  qp.tooltip = "free question tooltip"
+  qp.save
+
+  question
+end
+
 def create_preference(q_page, questions, timeout: "10m")
   preference = Preference.new
 

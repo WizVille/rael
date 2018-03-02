@@ -3,6 +3,7 @@ require "globalize"
 
 class QuestionnairePage < ActiveRecord::Base
   has_many :questions
+  has_many :free_questions
   has_one  :preference
 
   translates :title, :subtitle

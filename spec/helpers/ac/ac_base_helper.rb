@@ -1,6 +1,6 @@
 require 'logger'
 
-def connect_ac  
+def connect_ac
   ActiveRecord::Base.establish_connection(
       adapter: "sqlite3",
       database: ":memory:"
@@ -23,6 +23,7 @@ def connect_ac
       create_table :questions do |table|
           table.column :questionnaire_page_id, :integer
           table.column :position, :integer
+          table.column :type, :string
       end
 
       create_table :question_translations do |table|
@@ -41,6 +42,11 @@ def connect_ac
           table.column :unique_id, :string
           table.column :name, :string
           table.column :preference_id, :integer
+      end
+
+      create_table :question_preferences do |table|
+          table.column :tooltip, :string
+          table.column :question_id, :integer
       end
   end
 end

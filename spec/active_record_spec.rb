@@ -3,13 +3,13 @@ RSpec.describe "Active Record Tests" do
     require_relative "./helpers/ac/ac_base_helper.rb"
 
     connect_ac()
-    # drop_ac_tables()
-    # create_ac_tables()
 
     require_relative "./helpers/ac/questionnaire_page.rb"
     require_relative "./helpers/ac/question.rb"
+    require_relative "./helpers/ac/free_question.rb"
     require_relative "./helpers/ac/preference.rb"
     require_relative "./helpers/ac/account.rb"
+    require_relative "./helpers/ac/question_preference.rb"
 
     require_relative "./helpers/ac/ac_populate_helper.rb"
   end
@@ -184,6 +184,43 @@ RSpec.describe "Active Record Tests" do
       Rael.clone(@page_1.questions, schema, nil)
 
       expect(Question.count).to eq(4)
+    end
+
+    it "test ref tree resolution" do
+      schema = Rael::Schema.new("questionnaire_page", {
+        :static => [ :position, :created_at ],
+        :translated => [ :title ],
+        :foreign => {
+          :questions => {
+            :static => [ :position, :type ],
+            :translated => [ :content ]
+          },
+          :preference => {
+            :static => [ :timeout ],
+            :foreign => {
+              :first_question => {
+                :options => { :foreign_key_in_parent => true },
+                :static => [ :position ],
+                :translated => [ :content ]
+              }
+            }
+          },
+          :free_questions => {
+            :foreign => {
+              :question_preference => {
+                :options => { :foreign_key_name => "question_id" },
+
+                :static => [ :tooltip ]
+              }
+            }
+          }
+        }
+      })
+
+      add_free_question(@page_1)
+      Rael.clone(@page_1, schema, @page_2)
+
+      expect(@page_2.questions[2]&.question_preference&.tooltip).to eq("free question tooltip")
     end
   end
 
