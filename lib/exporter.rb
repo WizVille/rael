@@ -83,30 +83,32 @@ module Rael
 
       if @obj_refs[node_id]
         output_tree[:ref] = node_id
+        
+        output_tree = @obj_refs[node_id]
       else
         output_tree[:id] = ac_node.id
         output_tree[:node_id] = node_id
 
-        if Rael::Schema.static(schema_node).size > 0
-          Rael::Schema.static(schema_node).each do |schema_node_key|
-            output_tree[:static] ||= {}
-            output_tree[:static][schema_node_key] = ac_node[schema_node_key]
-          end
-        end
-
-        if Rael::Schema.translated(schema_node).size > 0
-          Rael::Schema.translated(schema_node).each do |translated_schema_node_key|
-            ac_node.translations.each do |translation|
-              locale = translation.locale
-
-              output_tree[:translated] ||= {}
-              output_tree[:translated][translated_schema_node_key] ||= {}
-              output_tree[:translated][translated_schema_node_key][locale] = translation[translated_schema_node_key]
-            end
-          end
-        end
-
         @obj_refs[node_id] = output_tree
+      end
+
+      if Rael::Schema.static(schema_node).size > 0
+        Rael::Schema.static(schema_node).each do |schema_node_key|
+          output_tree[:static] ||= {}
+          output_tree[:static][schema_node_key] = ac_node[schema_node_key]
+        end
+      end
+
+      if Rael::Schema.translated(schema_node).size > 0
+        Rael::Schema.translated(schema_node).each do |translated_schema_node_key|
+          ac_node.translations.each do |translation|
+            locale = translation.locale
+
+            output_tree[:translated] ||= {}
+            output_tree[:translated][translated_schema_node_key] ||= {}
+            output_tree[:translated][translated_schema_node_key][locale] = translation[translated_schema_node_key]
+          end
+        end
       end
     end
 

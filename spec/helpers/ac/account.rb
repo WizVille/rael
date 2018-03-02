@@ -3,6 +3,9 @@ require "globalize"
 
 class Account < ActiveRecord::Base
   belongs_to :preference
+  after_save :check_unique_id
 
-  validates :unique_id, uniqueness: { case_sensitive: false }
+  def check_unique_id
+    raise "check_unique_id" if Account.where(:unique_id => self.unique_id).count == 2
+  end
 end
