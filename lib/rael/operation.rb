@@ -112,7 +112,7 @@ module Rael
     end
 
     def save_model(model)
-      model.save!
+      model.save!(:validate => false)
 
       @mutations << {
         :action => :save_model,
