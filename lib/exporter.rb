@@ -1,6 +1,7 @@
 require 'rael/data_tree'
 require 'rael/schema'
 require 'rael/error'
+require 'carrierwave'
 
 module Rael
   class Exporter
@@ -97,7 +98,12 @@ module Rael
       if Rael::Schema.static(schema_node).size > 0
         Rael::Schema.static(schema_node).each do |schema_node_key|
           output_tree[:static] ||= {}
-          output_tree[:static][schema_node_key] = ac_node[schema_node_key]
+
+          if ac_node.send(schema_node_key).kind_of?(CarrierWave::Uploader::Base)
+            output_tree[:static][schema_node_key] = ((ac_node.send(schema_node_key)&.url || ac_node.send(schema_node_key)&.path) rescue ac_node.send(schema_node_key)&.path)
+          else
+            output_tree[:static][schema_node_key] = ac_node[schema_node_key]
+          end
         end
       end
 

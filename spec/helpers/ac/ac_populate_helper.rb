@@ -46,9 +46,12 @@ end
 def create_account(preference, unique_id: 1, name: "account 1")
   a = Account.new
 
+  avatar_img = open("./spec/helpers/ac/avatar.gif", "r")
+
   a.unique_id = unique_id
   a.name = name
   a.preference_id = preference.id
+  a.avatar = avatar_img
   a.save
 
   a

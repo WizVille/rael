@@ -42,6 +42,7 @@ def connect_ac
           table.column :unique_id, :string
           table.column :name, :string
           table.column :preference_id, :integer
+          table.column :avatar, :string
       end
 
       create_table :question_preferences do |table|

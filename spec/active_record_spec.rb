@@ -222,6 +222,37 @@ RSpec.describe "Active Record Tests" do
 
       expect(@page_2.questions[2]&.question_preference&.tooltip).to eq("free question tooltip")
     end
+
+    it 'test avatar duplication' do
+      schema = Rael::Schema.new("questionnaire_page", {
+        :static => [ :position, :created_at ],
+        :translated => [ :title ],
+        :foreign => {
+          :questions => {
+            :static => [ :position, :type ],
+            :translated => [ :content ]
+          },
+          :preference => {
+            :static => [ :timeout ],
+            :foreign => {
+              :first_question => {
+                :options => { :foreign_key_in_parent => true },
+                :static => [ :position ],
+                :translated => [ :content ]
+              },
+              :account => {
+                :s => [ :avatar ]
+              }
+            }
+          }
+        }
+      })
+
+      account = create_account(@preference)
+      Rael.clone(@page_1, schema, @page_2)
+
+      expect(@page_2.preference.account.avatar.path[-4..-1]).to eq(".gif")
+    end
   end
 
   context 'Error tests' do

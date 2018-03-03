@@ -1,4 +1,5 @@
 require 'active_support/inflector'
+require 'carrierwave'
 
 module Rael
   class Operation
@@ -52,7 +53,7 @@ module Rael
         unless model.destroyed?
           case mutation[:action]
           when :set_attr
-             model[mutation[:key]] = mutation[:old_val]
+            self.smart_set(model, mutation[:key], mutation[:old_val])
           when :set_translated_attrs
             model.attributes = mutation[:old_translation]
           when :save_model
@@ -81,9 +82,9 @@ module Rael
     end
 
     def set_attribute(model, key, new_val)
-      old_val = @model[key]
+      old_val = model[key]
 
-      model[key] = new_val
+      self.smart_set(model, key, new_val)
 
       @mutations << {
         :action => :set_attr,
@@ -155,6 +156,28 @@ module Rael
           self.set_translation(@model, columns.merge({ :locale => locale }))
           self.save_model(@model)
         end
+      end
+    end
+
+    def smart_set(model, key, val)
+      if model.send(key).kind_of?(CarrierWave::Uploader::Base)
+        begin
+          file = open(val)
+
+          extn = File.extname(file)
+          name = File.basename(file, extn)
+          content = File.open(file).read
+
+          locale_file = Tempfile.open([name, extn]) do |f|
+            f.write content
+            f.flush
+            model.send("#{key}=", f)
+          end
+        rescue
+          # file does not exist anymore
+        end
+      else
+        model[key] = val
       end
     end
   end
