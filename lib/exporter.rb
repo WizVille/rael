@@ -99,7 +99,7 @@ module Rael
         Rael::Schema.static(schema_node).each do |schema_node_key|
           output_tree[:static] ||= {}
 
-          if ac_node.send(schema_node_key).kind_of?(CarrierWave::Uploader::Base)
+          if (ac_node.send(schema_node_key).kind_of?(CarrierWave::Uploader::Base) rescue false)
             output_tree[:static][schema_node_key] = ((ac_node.send(schema_node_key)&.url || ac_node.send(schema_node_key)&.path) rescue ac_node.send(schema_node_key)&.path)
           else
             output_tree[:static][schema_node_key] = ac_node[schema_node_key]

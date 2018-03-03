@@ -160,12 +160,12 @@ module Rael
     end
 
     def smart_set(model, key, val)
-      if model.send(key).kind_of?(CarrierWave::Uploader::Base)
+      if (model.send(key).kind_of?(CarrierWave::Uploader::Base) rescue false)
         begin
           file = open(val)
 
-          extn = File.extname(file)
-          name = File.basename(file, extn)
+          extn = File.extname(val)
+          name = File.basename(val, extn)
           content = File.open(file).read
 
           locale_file = Tempfile.open([name, extn]) do |f|
