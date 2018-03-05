@@ -127,7 +127,7 @@ module Rael
       operation = nil
 
       if Rael::Schema.options(schema_node)&.dig(:model_name)
-        model_name = schema_node[:options][:model_name]
+        model_name = Rael::Schema.options(schema_node)[:model_name]
       end
 
       if data_node[:ref]
