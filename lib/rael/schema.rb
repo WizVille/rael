@@ -20,7 +20,8 @@ module Rael
       end
 
       if Rael::Schema.translated(schema_node).size > 0
-        ac_keys = ac_model&.translations&.first&.attributes&.keys&.map(&:to_sym) || []
+        ac_keys = ac_model&.class&.translated_attribute_names || []
+
         Rael::Schema.translated(schema_node).each do |translated_schema_node_key|
           if !ac_keys.include?(translated_schema_node_key)
             raise Rael::Error.new("Translated key <#{translated_schema_node_key}> does not exit in model <#{ac_model.class.table_name}>")

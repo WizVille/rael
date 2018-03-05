@@ -1,6 +1,5 @@
 require "bundler/setup"
 require "rael"
-require "rael/tuple"
 require "exporter"
 require "importer"
 require "rael/data_tree"
