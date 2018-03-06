@@ -177,8 +177,20 @@ module Rael
           # file does not exist anymore
         end
       else
-        model[key] = val
+        begin
+          model[key] = val
+        rescue Exception => e
+          if self.kind_of_hash_with_indifferent_error?(e)
+            model[key] = val.with_indifferent_access
+          else
+            raise Rael::Error.new("#{@model.class.table_name}.#{key}=#{val} failed: #{e.message}")
+          end
+        end
       end
+    end
+
+    def kind_of_hash_with_indifferent_error?(e)
+      return (e.message =~ /was supposed to be a ActiveSupport::HashWithIndifferentAccess, but was a Hash/)
     end
   end
 end

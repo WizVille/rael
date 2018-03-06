@@ -253,6 +253,38 @@ RSpec.describe "Active Record Tests" do
 
       expect(@page_2.preference.account.avatar.path[-4..-1]).to eq(".gif")
     end
+
+    it 'test serialize' do
+      schema = Rael::Schema.new("questionnaire_page", {
+        :static => [ :position, :created_at ],
+        :translated => [ :title ],
+        :foreign => {
+          :questions => {
+            :static => [ :position, :type ],
+            :translated => [ :content ]
+          },
+          :preference => {
+            :static => [ :timeout, :custom_options ],
+            :foreign => {
+              :first_question => {
+                :options => { :foreign_key_in_parent => true },
+                :static => [ :position ],
+                :translated => [ :content ]
+              }
+            }
+          }
+        }
+      })
+
+      account = create_account(@preference)
+
+      @preference.custom_options = { :a => 42 }.with_indifferent_access
+      @preference.save
+
+      Rael.clone(@page_1, schema, @page_2)
+
+      expect(@page_2.preference.custom_options[:a]).to eq(42)
+    end
   end
 
   context 'Error tests' do
