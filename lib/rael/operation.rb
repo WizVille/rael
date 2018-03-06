@@ -178,19 +178,16 @@ module Rael
         end
       else
         begin
-          model[key] = val
-        rescue Exception => e
-          if self.kind_of_hash_with_indifferent_error?(e)
+          case val
+          when Hash
             model[key] = val.with_indifferent_access
           else
-            raise Rael::Error.new("#{@model.class.table_name}.#{key}=#{val} failed: #{e.message}")
+            model[key] = val
           end
+        rescue Exception => e
+          raise Rael::Error.new("#{@model.class.table_name}.#{key}=#{val} failed: #{e.message}")
         end
       end
-    end
-
-    def kind_of_hash_with_indifferent_error?(e)
-      return (e.message =~ /was supposed to be a ActiveSupport::HashWithIndifferentAccess, but was a Hash/)
     end
   end
 end
