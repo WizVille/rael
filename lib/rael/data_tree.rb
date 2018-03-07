@@ -1,4 +1,4 @@
-require 'json'
+require 'oj'
 
 module Rael
   class DataTree
@@ -23,7 +23,7 @@ module Rael
     end
 
     def serialize
-      JSON.pretty_generate({
+      Oj.dump({
         :origin_model_name => @origin_model_name,
         :data => @data,
         :schema => @schema
@@ -31,12 +31,12 @@ module Rael
     end
 
     def self.parse(data_tree_serialized)
-      data_tree_hash = JSON.parse(data_tree_serialized)
+      data_tree_hash = Oj.load(data_tree_serialized)
 
       Rael::DataTree.new(
-        data_tree_hash["origin_model_name"],
-        :schema => data_tree_hash["schema"],
-        :data => data_tree_hash["data"]
+        data_tree_hash[:origin_model_name],
+        :schema => data_tree_hash[:schema],
+        :data => data_tree_hash[:data]
       )
     end
 
