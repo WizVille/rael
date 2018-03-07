@@ -28,4 +28,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "activerecord", "~> 5.1"
   spec.add_development_dependency "sqlite3"
   spec.add_development_dependency "globalize", "~> 5.1"
+
+  spec.add_runtime_dependency 'oj', "~> 3.5"
 end
