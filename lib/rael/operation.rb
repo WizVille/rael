@@ -180,7 +180,7 @@ module Rael
         begin
           case val
           when String
-            if val =~ /^--- !ruby(.*)/
+            if val =~ /^---(.*)/
               model[key] = YAML::load(val)
             else
               model[key] = val

@@ -264,7 +264,7 @@ RSpec.describe "Active Record Tests" do
             :translated => [ :content ]
           },
           :preference => {
-            :static => [ :timeout, :custom_options ],
+            :static => [ :timeout, :custom_options, :tags ],
             :foreign => {
               :first_question => {
                 :options => { :foreign_key_in_parent => true },
@@ -279,6 +279,7 @@ RSpec.describe "Active Record Tests" do
       account = create_account(@preference)
 
       @preference.custom_options = { :a => 42 }.with_indifferent_access
+      @preference.tags = [ "a", "b", "c" ]
       @preference.save
 
       Rael.clone(@page_1, schema, @page_2)

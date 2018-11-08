@@ -37,6 +37,7 @@ def connect_ac
           table.column :first_question_id, :integer
           table.column :questionnaire_page_id, :integer
           table.column :custom_options, :text
+          table.column :tags, :text
       end
 
       create_table :accounts do |table|
