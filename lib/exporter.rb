@@ -102,7 +102,13 @@ module Rael
           if (ac_node.send(schema_node_key).kind_of?(CarrierWave::Uploader::Base) rescue false)
             output_tree[:static][schema_node_key] = ((ac_node.send(schema_node_key)&.url || ac_node.send(schema_node_key)&.path) rescue ac_node.send(schema_node_key)&.path)
           else
-            output_tree[:static][schema_node_key] = ac_node[schema_node_key]
+            output_tree[:static][schema_node_key] = if ac_node.instance_variable_get(:@attributes)[schema_node_key.to_s].respond_to?(:value_before_type_cast)
+              ac_node.instance_variable_get(:@attributes)[schema_node_key.to_s].value_before_type_cast
+            elsif ac_node.instance_variable_get(:@attributes)[schema_node_key.to_s].respond_to?(:serialized_value)
+              ac_node.instance_variable_get(:@attributes)[schema_node_key.to_s].serialized_value
+            else
+              ac_node[schema_node_key]
+            end
           end
         end
       end

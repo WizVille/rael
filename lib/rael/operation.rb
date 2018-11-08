@@ -179,8 +179,12 @@ module Rael
       else
         begin
           case val
-          when Hash
-            model[key] = val.with_indifferent_access
+          when String
+            if val =~ /^--- !ruby(.*)/
+              model[key] = YAML::load(val)
+            else
+              model[key] = val
+            end
           else
             model[key] = val
           end
